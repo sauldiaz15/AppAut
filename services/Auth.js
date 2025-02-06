@@ -6,43 +6,40 @@ const API_URL = 'http://192.168.1.139:3000/api'; // Ajusta según tu servidor
 // Función de inicio de sesión
 export const handleLogin = async (email, password) => {
   if (!email || !password) {
-    //Alert.alert('Error', 'Por favor ingresa el correo y la contraseña');
+    // En caso de campos vacíos
     return { success: false, message: "Por favor ingresa el correo y la contraseña" };
-   }
+  }
 
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
 
     if (response.status === 200) {
-      //Alert.alert('Bienvenido', 'Inicio de sesión exitoso');
-       return response.data;
+      // Retorna los datos de la respuesta si es exitoso
+      return { success: true, data: response.data };
     } else {
-      //Alert.alert('Error', 'No se pudo iniciar sesión');
-      return { success: false, message: 'Hubo un problema al registrar el usuario' };  // Si hubo un error
+      return { success: false, message: 'Hubo un problema al iniciar sesión' };
     }
   } catch (error) {
-    //Alert.alert('Error', 'Hubo un problema con el servidor. Intenta nuevamente.');
-    Alert.alert("Error", error.response.data.message);
+    // En caso de un error en el servidor
+    return { success: false, message: error.response?.data?.message || 'Error al contactar al servidor' };
   }
 };
 
 // Función de registro de usuario (incluye nombre)
 export const handleRegister = async (username, email, password) => {
   if (!username || !email || !password) {
-    Alert.alert('Error', 'Todos los campos son obligatorios');
-    return;
+    return { success: false, message: 'Todos los campos son obligatorios' };
   }
 
   try {
     const response = await axios.post(`${API_URL}/register`, { username, email, password });
 
     if (response.status === 200) {
-      Alert.alert('Registro Exitoso21', 'Ahora puedes iniciar sesión');
-     } else {
-      Alert.alert('Error', 'No se pudo completar el registro');
+      return { success: true, message: 'Registro exitoso, ahora puedes iniciar sesión' };
+    } else {
+      return { success: false, message: 'No se pudo completar el registro' };
     }
   } catch (error) {
-    //Alert.alert('Error', 'Hubo un problema con el servidor. Intenta nuevamente.');
-    Alert.alert("Error", error.response.data.message);
+    return { success: false, message: error.response?.data?.message || 'Error al contactar al servidor' };
   }
 };

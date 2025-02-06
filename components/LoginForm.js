@@ -14,32 +14,28 @@ export default function AuthForm() {
     try {
       if (isLogin) {
         const userData = await handleLogin(email, password);
-        if (userData && userData.username) {
-            navigation.navigate('Welcome', { userName: userData.username }); // Navegar con datos
+        if (userData.success) {
+          navigation.navigate('Welcome', { userName: userData.data.username }); // Navegar con datos
         } else {
           Alert.alert('Error', userData.message);
         }
-      } 
-      
-      else {
+      } else {
         const result = await handleRegister(name, email, password);
         if (result.success) {
-        Alert.alert('Registro exitoso', 'Ahora puedes iniciar sesión');
-        setIsLogin(true); // Cambia el estado de login a verdadero
-        } 
-        else {
-        // Si el registro falló, muestra el mensaje de error
-        Alert.alert('Error', result.message);
+          Alert.alert('Registro exitoso', result.message);
+          setIsLogin(true); // Cambia el estado de login a verdadero
+          setName(''); // Limpiar el campo de nombre
+          setEmail(''); // Limpiar el campo de email
+          setPassword(''); // Limpiar el campo de contraseña
+        } else {
+          Alert.alert('Error', result.message);
         }
-        // await handleRegister(name, email, password);
-        // Alert.alert('Registro exitoso', 'Ahora puedes iniciar sesión');
-        // setIsLogin(true);
       }
-      
     } catch (error) {
       Alert.alert('Error', error.message || 'Ocurrió un problema, intenta de nuevo.');
     }
   };
+  
   
 
   return (
