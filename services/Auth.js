@@ -6,17 +6,19 @@ const API_URL = 'http://192.168.1.139:3000/api'; // Ajusta según tu servidor
 // Función de inicio de sesión
 export const handleLogin = async (email, password) => {
   if (!email || !password) {
-    Alert.alert('Error', 'Por favor ingresa el correo y la contraseña');
-    return;
-  }
+    //Alert.alert('Error', 'Por favor ingresa el correo y la contraseña');
+    return { success: false, message: "Por favor ingresa el correo y la contraseña" };
+   }
 
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
 
     if (response.status === 200) {
-      Alert.alert('Bienvenido', 'Inicio de sesión exitoso');
+      //Alert.alert('Bienvenido', 'Inicio de sesión exitoso');
+       return response.data;
     } else {
-      Alert.alert('Error', 'No se pudo iniciar sesión');
+      //Alert.alert('Error', 'No se pudo iniciar sesión');
+      return { success: false, message: 'Hubo un problema al registrar el usuario' };  // Si hubo un error
     }
   } catch (error) {
     //Alert.alert('Error', 'Hubo un problema con el servidor. Intenta nuevamente.');
@@ -35,8 +37,8 @@ export const handleRegister = async (username, email, password) => {
     const response = await axios.post(`${API_URL}/register`, { username, email, password });
 
     if (response.status === 200) {
-      Alert.alert('Registro Exitoso', 'Ahora puedes iniciar sesión');
-    } else {
+      Alert.alert('Registro Exitoso21', 'Ahora puedes iniciar sesión');
+     } else {
       Alert.alert('Error', 'No se pudo completar el registro');
     }
   } catch (error) {
