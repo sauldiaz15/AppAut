@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { StyleSheet, TextInput, View, Button, Text, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Importar navegación
 import { handleLogin, handleRegister } from '../services/Auth';
+import { Platform } from 'react-native';
+
 
 export default function AuthForm() {
   const navigation = useNavigation(); // Hook para navegación
@@ -10,30 +12,47 @@ export default function AuthForm() {
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
 
+ //funcion para saber la plataforma 
+  const showAlert = (title, message) => {
+      if (Platform.OS === 'web') {
+      window.alert(`${title}: ${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+  
+ // Función para limpiar los campos del formulario
+ const clearForm = () => {
+  setName('');
+  setEmail('');
+  setPassword('');
+};
+
   const handleAuth = async () => {
     try {
-      if (isLogin) {
+      if (isLogin){
         const userData = await handleLogin(email, password);
         if (userData.success) {
           navigation.navigate('Welcome', { userName: userData.data.username }); // Navegar con datos
-        } else {
-          Alert.alert('Error', userData.message);
+        } 
+        else{
+          showAlert('Error', userData.message);
         }
-      } else {
+      }else {
         const result = await handleRegister(name, email, password);
         if (result.success) {
-          Alert.alert('Registro exitoso', result.message);
+          showAlert('Registro exitoso', result.message);
           setIsLogin(true); // Cambia el estado de login a verdadero
-          setName(''); // Limpiar el campo de nombre
-          setEmail(''); // Limpiar el campo de email
-          setPassword(''); // Limpiar el campo de contraseña
+          clearForm();
         } else {
-          Alert.alert('Error', result.message);
-        }
+          showAlert('Error', result.message);
+          } 
+               
       }
     } catch (error) {
-      Alert.alert('Error', error.message || 'Ocurrió un problema, intenta de nuevo.');
-    }
+        showAlert('Error', error.message || 'Ocurrió un problema, intenta de nuevo.');
+      }
+    
   };
   
   
@@ -68,9 +87,22 @@ export default function AuthForm() {
 
       <Button title={isLogin ? 'Iniciar Sesión' : 'Registrarse'} onPress={handleAuth} />
 
-      <Text style={styles.switchText} onPress={() => setIsLogin(!isLogin)}>
+      {/* <Text style={styles.switchText} onPress={() => setIsLogin(!isLogin)}>
         {isLogin ? '¿No tienes cuenta? Regístrate aquí' : '¿Ya tienes cuenta? Inicia sesión'}
-      </Text>
+      </Text> */}
+     <Text style={styles.switchText} onPress={() => { 
+        setIsLogin(!isLogin);
+        clearForm(); 
+       }}>
+      {isLogin ? '¿No tienes cuenta? Regístrate aquí' : '¿Ya tienes cuenta? Inicia sesión'}
+    </Text>
+     <br>
+     </br>
+     <Text style={styles.forgotPasswordText} onPress={() => setIsForgotPassword(true)}>
+      ¿Olvidaste tu contraseña?
+     </Text>
+   
+      
     </View>
   );
 }

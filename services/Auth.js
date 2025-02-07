@@ -1,7 +1,6 @@
-import { Alert } from 'react-native';
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.139:3000/api'; // Ajusta según tu servidor
+const API_URL = 'http://192.168.122.1:3000/api'; // Ajusta según tu servidor
 
 // Función de inicio de sesión
 export const handleLogin = async (email, password) => {
