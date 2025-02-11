@@ -42,3 +42,22 @@ export const handleRegister = async (username, email, password) => {
     return { success: false, message: error.response?.data?.message || 'Error al contactar al servidor' };
   }
 };
+
+// Función de recuperación de contraseña
+export const handleForgotPassword = async (email) => {
+  if (!email) {
+    return { success: false, message: 'Por favor ingresa tu correo electrónico' };
+  }
+
+  try {
+    const response = await axios.post(`${API_URL}/forgot-password`, { email });
+
+    if (response.status === 200) {
+      return { success: true, message: 'Se ha enviado un enlace de recuperación a tu correo' };
+    } else {
+      return { success: false, message: 'No se pudo procesar la solicitud' };
+    }
+  } catch (error) {
+    return { success: false, message: error.response?.data?.message || 'Error al contactar al servidor' };
+  }
+};
